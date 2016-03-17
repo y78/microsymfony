@@ -1,0 +1,13 @@
+{
+    "name": "y78/router",
+    "authors": [
+        {
+            "name": "yarik",
+            "email": "n.yd@yandex.ru"
+        }
+    ],
+    "autoload": {
+        "psr-0": { "": "src/" }
+    },
+    "require": {}
+}

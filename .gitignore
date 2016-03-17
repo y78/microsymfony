@@ -1,0 +1,5 @@
+.DS_Store
+/app/cache/*
+/vendor/
+/.idea
+todo.txt
