@@ -7,6 +7,8 @@ use Yarik\MicroSymfony\Component\Core\Bag;
 class Router
 {
     protected $routes = [];
+    protected $parameters = [];
+    protected $requirements = [];
     protected $regexprs = [];
     protected $request;
 
@@ -16,9 +18,29 @@ class Router
         $this->routes = new Bag();
     }
 
-    public function addRoute($name, $resource)
+    public function getRoutes()
+    {
+        return $this->routes;
+    }
+
+    public function getRequirements()
+    {
+        return $this->requirements;
+    }
+
+    public function getRegexprs()
+    {
+        return $this->regexprs;
+    }
+
+    public function addRoute($name, $resource, $requirements = null)
     {
         $this->routes->set($name, $resource);
+
+        if ($requirements) {
+            $this->requirements[$name] = $requirements;
+        }
+
         return $this;
     }
 
@@ -30,7 +52,10 @@ class Router
         
         foreach ($this->regexprs as $regexpr) {
             if (preg_match($regexpr, $this->request->getPath(), $matches)) {
-                return new Route($matches);
+                $route = new Route($matches);
+                $route->intersectParameters($this->parameters[$route->getName()]);
+
+                return $route;
             }
         }
 
@@ -61,17 +86,27 @@ class Router
                 $result[] = $matches[2][$i];
             }
         }
+
         return $result;
     }
 
-    public static function getRegexp($value, $routeName = '')
+    public function getRegexp($value, $routeName = '')
     {
         $split = self::split($value);
         $parts = array_map(function ($value) use ($routeName) {
-            return $value[0] == '{' && $value[strlen($value)-1] == '}' ?
-                '(?P<__' . $routeName . '__' .substr($value, 1, -1) . '>.+?)' :
-                preg_quote($value, '/')
-            ;
+            if ($value[0] == '{' && $value[strlen($value)-1] == '}') {
+                $value = substr($value, 1, -1);
+                $exp = isset($this->requirements[$routeName][$value]) ?
+                    $this->requirements[$routeName][$value] :
+                    '.+?'
+                ;
+
+                $this->parameters[$routeName][$value] = $exp;
+
+                return '(?P<__' . $routeName . '__' . $value . '>' . $exp . ')';
+            }
+
+            return preg_quote($value, '/');
         }, $split);
 
         $exp = '^' . implode($parts) . '$';

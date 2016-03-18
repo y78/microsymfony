@@ -26,6 +26,12 @@ class Route
         }
     }
 
+    public function intersectParameters(array $parameters)
+    {
+        $parameters = array_intersect_key($this->parameters->all(), $parameters);
+        $this->parameters = new Bag($parameters);
+    }
+
     public function setName($name)
     {
         $this->name = $name;
