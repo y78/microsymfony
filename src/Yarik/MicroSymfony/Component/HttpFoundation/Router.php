@@ -15,7 +15,7 @@ class Router
     public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->routes = new Bag();
+        $this->routes = new ParameterBag();
     }
 
     public function getRoutes()
@@ -42,6 +42,23 @@ class Router
         }
 
         return $this;
+    }
+
+    public function setRegexprs(array $regexprs)
+    {
+        $this->regexprs = $regexprs;
+        return $this;
+    }
+
+    public function setParameters($parameters)
+    {
+        $this->parameters = $parameters;
+        return $this;
+    }
+
+    public function getParameters()
+    {
+        return $this->parameters;
     }
 
     public function getRoute()

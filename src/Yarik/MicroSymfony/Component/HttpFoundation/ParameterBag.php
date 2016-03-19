@@ -1,8 +1,8 @@
 <?php
 
-namespace Yarik\MicroSymfony\Component\Core;
+namespace Yarik\MicroSymfony\Component\HttpFoundation;
 
-class Bag implements \Iterator
+class ParameterBag implements \Iterator
 {
     protected $data = [];
 

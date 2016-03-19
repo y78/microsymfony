@@ -2,8 +2,6 @@
 
 namespace Yarik\MicroSymfony\Component\HttpFoundation;
 
-use Yarik\MicroSymfony\Component\Core\Bag;
-
 class Request
 {
     protected $path;
@@ -13,9 +11,9 @@ class Request
 
     public function __construct()
     {
-        $this->query = new Bag($_GET);
-        $this->request = new Bag($_POST);
-        $this->server = new Bag($_SERVER);
+        $this->query = new ParameterBag($_GET);
+        $this->request = new ParameterBag($_POST);
+        $this->server = new ParameterBag($_SERVER);
     }
 
     public function getPath()

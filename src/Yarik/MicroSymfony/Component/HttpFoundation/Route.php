@@ -2,8 +2,6 @@
 
 namespace Yarik\MicroSymfony\Component\HttpFoundation;
 
-use Yarik\MicroSymfony\Component\Core\Bag;
-
 class Route
 {
     protected $name;
@@ -11,7 +9,7 @@ class Route
 
     public function __construct(array $paramters = [])
     {
-        $this->parameters = new Bag();
+        $this->parameters = new ParameterBag();
         foreach ($paramters as $key => $value) {
             if (!is_string($key)) {
                 continue;
@@ -29,7 +27,7 @@ class Route
     public function intersectParameters(array $parameters)
     {
         $parameters = array_intersect_key($this->parameters->all(), $parameters);
-        $this->parameters = new Bag($parameters);
+        $this->parameters = new ParameterBag($parameters);
     }
 
     public function setName($name)
