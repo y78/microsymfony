@@ -4,12 +4,17 @@ namespace Yarik\MicroSymfony\Component\HttpFoundation;
 
 class Route
 {
-    protected $name;
     public $parameters;
+
+    /** @var ParameterBag $defaults */
+    public $defaults;
+
+    protected $name;
 
     public function __construct(array $paramters = [])
     {
         $this->parameters = new ParameterBag();
+
         foreach ($paramters as $key => $value) {
             if (!is_string($key)) {
                 continue;
@@ -22,6 +27,11 @@ class Route
             $this->name = $matches['route'];
             $this->parameters->set($matches['param'], $value);
         }
+    }
+
+    public function get($parameter)
+    {
+        return $this->defaults->get($parameter);
     }
 
     public function intersectParameters(array $parameters)

@@ -1,7 +1,8 @@
-first
-    second
-        third
-    second2
-        third2
-first2
-    second3
+imports:
+    - { resource: parameters.yml }
+    - { resource: components.yml }
+
+services:
+    app.container_wrapper:
+        class: App\Main\Container\ContainerWrapper
+        arguments: [@container]

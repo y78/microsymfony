@@ -1,0 +1,9 @@
+imports:
+    - { resource: config.yml }
+
+services:
+
+parameters:
+    namespace: App\Main
+    command.dirs:
+        - %kernel.root_dir%/../src/App/Main/Command

@@ -2,13 +2,14 @@
 
 namespace Yarik\MicroSymfony\Component\HttpFoundation;
 
-use Yarik\MicroSymfony\Component\Core\Bag;
+use Yarik\MicroSymfony\Component\HttpFoundation\ParameterBag;
 
 class Router
 {
     protected $routes = [];
     protected $parameters = [];
     protected $requirements = [];
+    protected $defaults = [];
     protected $regexprs = [];
     protected $request;
 
@@ -33,9 +34,10 @@ class Router
         return $this->regexprs;
     }
 
-    public function addRoute($name, $resource, $requirements = null)
+    public function addRoute($name, $resource, $requirements = null, $defaults = null)
     {
         $this->routes->set($name, $resource);
+        $this->defaults[$name] = $defaults;
 
         if ($requirements) {
             $this->requirements[$name] = $requirements;
@@ -71,6 +73,7 @@ class Router
             if (preg_match($regexpr, $this->request->getPath(), $matches)) {
                 $route = new Route($matches);
                 $route->intersectParameters($this->parameters[$route->getName()]);
+                $route->defaults = new ParameterBag($this->defaults[$route->getName()]);
 
                 return $route;
             }

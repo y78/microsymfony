@@ -1,0 +1,18 @@
+services:
+    router_factory:
+        class: Yarik\MicroSymfony\Component\HttpFoundation\Factory\RouterFactory
+        arguments: [@yaml_reader, %kernel.root_dir%/config/routing.yml]
+
+    router:
+        class: Yarik\MicroSymfony\Component\HttpFoundation\Router
+        factory: { service: router_factory, method: createRouter, arguments: [@request] }
+
+    mongo.client:
+        class: \MongoClient
+
+    yaml_reader:
+        class: Yarik\MicroSymfony\Component\Parser\YamlReader
+        arguments: [@yaml_parser]
+
+    yaml_parser:
+        class: Yarik\MicroSymfony\Component\Parser\YamlParser

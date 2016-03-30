@@ -2,20 +2,33 @@
 
 namespace Yarik\MicroSymfony\Component\Dependency;
 
-class Container
+class Container implements ContainerInterface
 {
     protected $config = [];
+    protected $parameters = [];
     protected $services = [];
 
-    public function __construct(array $config)
+    public function __construct(array $config, array $parameters)
     {
         $this->config = $config;
+        $this->parameters = $parameters;
     }
 
     public function set($id, $service)
     {
         $this->services[$id] = $service;
         return $this;
+    }
+
+    public function setParameter($id, $value)
+    {
+        $this->parameters[$id] = $value;
+        return $this;
+    }
+
+    public function getParameter($id)
+    {
+        return $this->prepareParam($this->parameters[$id]);
     }
 
     public function get($id)
@@ -34,6 +47,20 @@ class Container
     public function init($id, array $config = [])
     {
         $reflect = new \ReflectionClass($config['class']);
+
+        if (isset($config['factory'])) {
+            $factoryConfig = $config['factory'];
+            $factory = $this->get($factoryConfig['service']);
+            $arguments = isset($factoryConfig['arguments']) ?
+                $this->prepareArguments($factoryConfig['arguments']) :
+                []
+            ;
+
+            return $this->services[$id] =
+                call_user_func_array([$factory, $factoryConfig['method']], $arguments)
+            ;
+        }
+
         return $this->services[$id] =
             $reflect->newInstanceArgs(isset($config['arguments']) ?
                 $this->prepareArguments($config['arguments']) :
@@ -55,10 +82,27 @@ class Container
             return $arg;
         }
 
+        $arg = $this->prepareParam($arg);
+
         if ($arg && $arg[0] == '@') {
             return $this->get(mb_strcut($arg, 1));
         }
 
         return $arg;
+    }
+
+    private function prepareParam($param)
+    {
+        if (is_array($param)) {
+            return array_map(function ($param) {
+                return $this->prepareParam($param);
+            }, $param);
+        }
+
+        $param = preg_replace_callback('/\%([\w\.\_\-]+)\%/', function ($match) {
+            return $this->getParameter($match[1]);
+        }, $param);
+
+        return $param;
     }
 }

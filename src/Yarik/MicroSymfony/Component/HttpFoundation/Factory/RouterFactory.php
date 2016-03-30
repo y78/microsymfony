@@ -4,14 +4,15 @@ namespace Yarik\MicroSymfony\Component\HttpFoundation\Factory;
 
 use Yarik\MicroSymfony\Component\HttpFoundation\Request;
 use Yarik\MicroSymfony\Component\HttpFoundation\Router;
+use Yarik\MicroSymfony\Component\Parser\YamlReader;
 
 class RouterFactory
 {
     protected $configuration;
 
-    public function __construct(array $configuration)
+    public function __construct(YamlReader $reader, $configPath)
     {
-        $this->configuration = $configuration;
+        $this->configuration = $reader->read($configPath);
     }
 
     public function createRouter(Request $request)
@@ -20,8 +21,8 @@ class RouterFactory
         foreach ($this->configuration as $route => $configuration) {
             $data = $this->handleRouteData($route, $configuration);
 
-            foreach ($data as list($name, $resource, $requirements)) {
-                $router->addRoute($name, $resource, $requirements);
+            foreach ($data as list($name, $resource, $requirements, $defaults)) {
+                $router->addRoute($name, $resource, $requirements, $defaults);
             }
         }
 
@@ -36,7 +37,7 @@ class RouterFactory
         $result = [];
         $handleRoute = true;
         foreach ($data as $key => $value) {
-            if (!in_array($key, ['path', 'requirements'])) {
+            if (!in_array($key, ['path', 'requirements', 'defaults'])) {
                 $handleRoute = false;
                 $result = array_merge(
                     $result,
@@ -46,7 +47,7 @@ class RouterFactory
         }
 
         if ($handleRoute) {
-            $result[] = [$route, $path, $requirements];
+            $result[] = [$route, $path, $requirements, $data['defaults']];
         }
 
         return $result;
