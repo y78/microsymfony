@@ -10,12 +10,17 @@ class TestCommand extends BaseCommand
     public function execute(ArgvInput $input)
     {
         $time = microtime(true) * 1000;
-
-        $manager = $this->container->getDocumentManager();
-        $object = $manager->find(Doc::class, 12);
-        var_dump($object);
+        for ($i = 0; $i < 40000000; $i++) {
+            $doc = new Doc();
+            $this->test($doc);
+        }
 
         var_dump(microtime(true) * 1000 - $time);
+    }
+
+    public function test(Doc $doc)
+    {
+        return $doc;
     }
 
     public function getName()

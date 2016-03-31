@@ -26,9 +26,6 @@ class Hydrator
 
         foreach ($this->mapping as $field => $options) {
             $name = isset($options['name']) ? $options['name'] : $field;
-            if (!isset($options['name'])) {
-                continue;
-            }
 
             if (!$r->hasProperty($field)) {
                 continue;

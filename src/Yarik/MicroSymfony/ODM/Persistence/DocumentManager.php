@@ -6,6 +6,7 @@ class DocumentManager implements ObjectManager
 {
     /** @var \MongoDB $db */
     protected $db;
+    protected $idsCollection;
     protected $client;
     protected $metadata = [];
 
@@ -16,14 +17,16 @@ class DocumentManager implements ObjectManager
     protected $original = [];
     protected $objects = [];
 
-    public function __construct(\MongoClient $client, $dbName, array $metadata)
+    public function __construct(\MongoDB\Driver\Manager $client, $dbName, array $metadata)
     {
         $this->client = $client;
-        $this->db = $client->selectDB($dbName);
+        $this->db = $dbName;
         $this->metadata = $metadata;
+
+        $this->idsCollection = new Collection($this->client, $this->db, 'microids');
     }
 
-    /** @return \MongoCollection */
+    /** @return Collection */
     public function getCollection($class)
     {
         if (isset($this->collections[$class])) {
@@ -31,17 +34,16 @@ class DocumentManager implements ObjectManager
         }
 
         $collectionName = $this->metadata[$class]['collection'];
-        return $this->collections[$class] = $this->db->{$collectionName};
+        return $this->collections[$class] = new Collection($this->client, $this->db, $collectionName);
     }
 
-    public function find($class, $id, $fields = [])
+    public function find($class, $id)
     {
-        $fields = $this->prepareFields($class, $fields);
-        if (null === $data = $this->getCollection($class)->findOne(['_id' => $id], $fields)) {
+        if (null === $data = $this->getCollection($class)->findOne(['_id' => $id])) {
             return null;
         }
 
-        $object = $this->create($class, $data);
+        $object = $this->create($class, (array)$data);
         $this->initializeObject($object, $data);
 
         return $object;
@@ -51,22 +53,6 @@ class DocumentManager implements ObjectManager
     {
         $this->objects[get_class($object)][spl_object_hash($object)] = $object;
 
-//        $class = get_class($object);
-//        $prop = new \ReflectionProperty($class, 'id');
-//        $prop->setAccessible(true);
-//        $id = $this->getLastId($class);
-//
-//        if (null === $newId = $prop->getValue($object)) {
-//            $prop->setValue($object, $id);
-//            $newId = $id;
-//        }
-//
-//        if ($id <= $newId) {
-//            $this->setLastId($class, $newId+1);
-//        }
-//
-//        $data = $this->getHydrator($class)->unhydrate($object);
-//        $this->getCollection($class)->insert($data);
         return $this;
     }
 
@@ -98,35 +84,34 @@ class DocumentManager implements ObjectManager
     public function flush()
     {
         foreach ($this->objects as $class => $objects) {
-            $persist = [];
+            $collection = $this->getCollection($class);
 
             foreach ($objects as $id => $object) {
                 $data = $this->getHydrator($class)->unhydrate($object);
 
-                if (!isset($this->original[$class][$id])) {
-                    $persist[$id] = $data;
+                if (isset($this->original[$class][$id]) && serialize($this->original[$class][$id]) == serialize($data)) {
                     continue;
                 }
 
-                if (serialize($this->original[$class][$id]) == serialize($data)) {
-                    continue;
+                if (!isset($data['_id'])) {
+                    $lastId = isset($lastId) ? ++$lastId : $this->getLastId($class);
+                    $data['_id'] = $lastId;
+
+                    $r = new \ReflectionProperty($class, 'id');
+                    $r->setAccessible(true);
+                    $r->setValue($object, $id);
+
+                    unset($r);
                 }
 
-                $persist[$id] = $data;
+                $collection->upsert($data);
             }
 
-            foreach ($persist as $insertData) {
-                if (!isset($insertData['_id'])) {
-                    $insertData['_id'] = $id = $this->getLastId($class);
-                    $this->setLastId($class, $id);
-                }
-
-                $id = $insertData['_id'];
-                $this
-                    ->getCollection($class)
-                    ->update(['_id' => $id], $insertData, ['upsert' => true])
-                ;
+            if (isset($lastId)) {
+                $this->setLastId($class, $lastId);
             }
+
+            $collection->flush();
         }
 
         return $this;
@@ -171,6 +156,10 @@ class DocumentManager implements ObjectManager
     {
         foreach ($fields as &$field) {
             if (isset($this->metadata[$class][$field]['name'])) {
+                if ($field === '_id') {
+                    $field = '_id';
+                }
+
                 $field = $this->metadata[$class][$field]['name'];
             }
         }
@@ -184,13 +173,18 @@ class DocumentManager implements ObjectManager
 
     protected function setLastId($class, $id)
     {
-        $this->db->microids->update(['_id' => $class], ['_id' => $class, 'val' => $id], ['upsert' => true]);
+        $this
+            ->idsCollection
+            ->upsert(['_id' => $class, 'val' => $id])
+            ->flush()
+        ;
+
         return $this;
     }
 
     protected function getLastId($class)
     {
-        if (null === $data = $this->db->microids->findOne(['_id' => $class])) {
+        if (null === $data = $this->idsCollection->findOne(['_id' => $class])) {
             return 1;
         }
 
