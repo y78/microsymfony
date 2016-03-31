@@ -1,2 +1,14 @@
 parameters:
-    a: b
+    mongo.db_name: testdb
+    mongo.metadata:
+        App\Main\Document\Doc:
+            collection: doc
+            mapping:
+                id: {name: _id, type: int}
+                name: {name: name, type: string}
+                embed: {name: embed, type: embed, targetDocument: App\Main\Document\DocEmbed}
+
+        App\Main\Document\DocEmbed:
+            mapping:
+                key1: {name: key1, type: string}
+                key2: {name: key2, type: string}

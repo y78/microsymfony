@@ -10,6 +10,10 @@ services:
     mongo.client:
         class: \MongoClient
 
+    mongo.manager:
+        class: Yarik\MicroSymfony\ODM\Persistence\DocumentManager
+        arguments: [@mongo.client, %mongo.db_name%, %mongo.metadata%]
+
     yaml_reader:
         class: Yarik\MicroSymfony\Component\Parser\YamlReader
         arguments: [@yaml_parser]

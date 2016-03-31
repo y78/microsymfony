@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+const WEB_DIR = __DIR__;
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$time = microtime(true) * 1000;
+require_once __DIR__ . '/AppKernel.php';
+
+$kernel = new AppKernel('command');
+$input = new \Yarik\MicroSymfony\Component\Console\ArgvInput();
+
+$console = new \Yarik\MicroSymfony\Component\Console\Console($kernel->getContainer());
+$console->initCommands();
+$console->run($input);
+
+var_dump(microtime(true) * 1000 - $time);

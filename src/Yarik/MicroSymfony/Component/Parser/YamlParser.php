@@ -21,6 +21,7 @@ class YamlParser
         if ($value[0] === '{' || $value[0] === '[') {
             $value = preg_replace('/([{,]+)(\s*)([^"]+?)\s*:/','$1"$3":', $value) . PHP_EOL;
             $value = preg_replace('/([\:\,\[]+)\s*([^\[\\"\s,\]:\}]+)/', '$1"$2"', $value);
+            $value = str_replace('\\', '\\\\', $value);
 
             return json_decode($value, true);
         }
@@ -79,7 +80,7 @@ class YamlParser
                 continue;
             }
 
-            if (preg_match('/^([\.\_\-\w]+)\:\s*(.*)$/', $this->line, $matches)) {
+            if (preg_match('/^([\.\_\\\\\-\w]+)\:\s*(.*)$/', $this->line, $matches)) {
                 $this->value = $matches[1];
                 $this->type = self::TYPE_KEY;
 

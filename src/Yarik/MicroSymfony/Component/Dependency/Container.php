@@ -84,6 +84,12 @@ class Container implements ContainerInterface
 
         $arg = $this->prepareParam($arg);
 
+        if (is_array($arg)) {
+            return array_map(function ($arg) {
+                return $this->prepareArgument($arg);
+            }, $arg);
+        }
+
         if ($arg && $arg[0] == '@') {
             return $this->get(mb_strcut($arg, 1));
         }
@@ -97,6 +103,10 @@ class Container implements ContainerInterface
             return array_map(function ($param) {
                 return $this->prepareParam($param);
             }, $param);
+        }
+
+        if (preg_match('/^\%([\w\.\_\-]+)\%$/', $param, $matches)) {
+            return $this->getParameter($matches[1]);
         }
 
         $param = preg_replace_callback('/\%([\w\.\_\-]+)\%/', function ($match) {
