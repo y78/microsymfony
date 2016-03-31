@@ -8,7 +8,8 @@ services:
         factory: { service: router_factory, method: createRouter, arguments: [@request] }
 
     mongo.client:
-        class: \MongoClient
+        class: \MongoDB\Driver\Manager
+        arguments: ['mongodb://localhost:27017']
 
     mongo.manager:
         class: Yarik\MicroSymfony\ODM\Persistence\DocumentManager

@@ -5,10 +5,10 @@ parameters:
             collection: doc
             mapping:
                 id: {name: _id, type: int}
-                name: {name: name, type: string}
-                embed: {name: embed, type: embed, targetDocument: App\Main\Document\DocEmbed}
+                name: {type: string}
+                embed: {type: embed, targetDocument: App\Main\Document\DocEmbed}
 
         App\Main\Document\DocEmbed:
             mapping:
-                key1: {name: key1, type: string}
-                key2: {name: key2, type: string}
+                key1: {type: string}
+                key2: {type: string}
