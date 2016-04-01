@@ -2,11 +2,13 @@
 <?php
 
 const WEB_DIR = __DIR__;
+//require_once __DIR__ . '/cache.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $time = microtime(true) * 1000;
 require_once __DIR__ . '/AppKernel.php';
 
+//$kernel = new \Cache\CacheKernel(null);
 $kernel = new AppKernel('command');
 $input = new \Yarik\MicroSymfony\Component\Console\ArgvInput();
 

@@ -118,6 +118,8 @@ class YamlParser
             return null;
         }
 
+        $line = preg_replace('/\#.*$/', '', $line);
+
         $line = rtrim($line);
         $this->line = ltrim($line);
         if ($this->line === '') {

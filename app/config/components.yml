@@ -11,9 +11,16 @@ services:
         class: \MongoDB\Driver\Manager
         arguments: ['mongodb://localhost:27017']
 
+    mongo.manager.factory:
+        class: Yarik\MicroSymfony\ODM\Persistence\DocumentManagerFactory
+        arguments: [@yaml_reader, %kernel.root_dir%/config/mapping.yml]
+
     mongo.manager:
         class: Yarik\MicroSymfony\ODM\Persistence\DocumentManager
-        arguments: [@mongo.client, %mongo.db_name%, %mongo.metadata%]
+        factory:
+            service: mongo.manager.factory
+            method: createDocumentManager
+            arguments: [@mongo.client, %mongo.db_name%]
 
     yaml_reader:
         class: Yarik\MicroSymfony\Component\Parser\YamlReader
@@ -21,3 +28,31 @@ services:
 
     yaml_parser:
         class: Yarik\MicroSymfony\Component\Parser\YamlParser
+
+    cache.saver:
+        class: Yarik\MicroSymfony\Component\Cache\CacheSaver
+        arguments:
+            - %kernel.root_dir%/cache.php
+            - %kernel.root_dir%/config/config.yml
+            - %kernel.root_dir%/config/routing.yml
+            - %kernel.root_dir%/config/mapping.yml
+            -
+               - Yarik\MicroSymfony\Component\HttpKernel\Kernel
+               - Yarik\MicroSymfony\Component\Parser\YamlReader
+               - Yarik\MicroSymfony\Component\Parser\YamlParser
+               - Yarik\MicroSymfony\Component\Dependency\Container
+               - Yarik\MicroSymfony\Component\Dependency\ContainerInterface
+               - Yarik\MicroSymfony\Component\HttpFoundation\Request
+               - Yarik\MicroSymfony\Component\HttpFoundation\ParameterBag
+               - Yarik\MicroSymfony\Component\HttpFoundation\Router
+               - Yarik\MicroSymfony\Component\HttpFoundation\Factory\RouterFactory
+               - Yarik\MicroSymfony\Component\HttpFoundation\Factory\CachedRouterFactory
+               - Yarik\MicroSymfony\Component\HttpFoundation\Route
+               - Yarik\MicroSymfony\Component\HttpFoundation\JsonResponse
+               - Yarik\MicroSymfony\Component\HttpFoundation\Response
+               - Yarik\MicroSymfony\ODM\Persistence\DocumentManagerCachedFactory
+#               - Yarik\MicroSymfony\ODM\Persistence\Collection
+#               - Yarik\MicroSymfony\ODM\Persistence\DocumentManager
+#               - Yarik\MicroSymfony\ODM\Persistence\DocumentManagerFactory
+#               - Yarik\MicroSymfony\ODM\Persistence\Hydrator
+#               - Yarik\MicroSymfony\ODM\Persistence\ObjectManager
