@@ -2,6 +2,8 @@
 
 namespace Yarik\MicroSymfony\ODM\Persistence;
 
+use MongoDB\BSON\UTCDatetime;
+
 class Hydrator
 {
     protected $r;
@@ -83,6 +85,8 @@ class Hydrator
                     ->manager
                     ->create($options['targetDocument'], $data ? (array)$data : $data)
                 ;
+            case 'date':
+                return new \DateTime($data->date);
         }
 
         return $data;

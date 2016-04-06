@@ -1,4 +1,0 @@
-services:
-    app.container_wrapper:
-        class: App\Main\Container\ContainerWrapper
-        arguments: [@container]

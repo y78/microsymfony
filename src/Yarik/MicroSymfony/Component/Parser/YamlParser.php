@@ -19,8 +19,8 @@ class YamlParser
     protected function handleValue($value)
     {
         if ($value[0] === '{' || $value[0] === '[') {
-            $value = preg_replace('/([{,]+)(\s*)([^"]+?)\s*:/','$1"$3":', $value) . PHP_EOL;
-            $value = preg_replace('/([\:\,\[]+)\s*([^\[\\"\s,\]:\}]+)/', '$1"$2"', $value);
+            $value = preg_replace('/([{,]+)(\s*)([^"\']+?)\s*:/','$1"$3":', $value) . PHP_EOL;
+            $value = preg_replace('/([{\:\,\[]++)\s*([^\[\\\'"\s,\]:\}]+)/', '$1"$2"', $value);
             $value = str_replace('\\', '\\\\', $value);
 
             return json_decode($value, true);

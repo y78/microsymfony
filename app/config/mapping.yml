@@ -1,11 +1,6 @@
-App\Main\Document\Doc:
-    collection: doc
-    mapping:
-        id: {name: _id, type: int}
-        name: {type: string}
-        embed: {type: embed, targetDocument: App\Main\Document\DocEmbed}
-
-App\Main\Document\DocEmbed:
-    mapping:
-        key1: {type: string}
-        key2: {type: string}
+#App\Main\Document\Doc:
+#    collection: doc
+#    mapping:
+#        id: {name: _id, type: int}
+#        name: {type: string}
+#        embed: {type: embed, targetDocument: App\Main\Document\DocEmbed}
