@@ -20,12 +20,14 @@ class Route
                 continue;
             }
 
-            if (!preg_match('/^__(?P<route>.+?)__(?P<param>.+?)$/', $key, $matches)) {
+            if (!preg_match('/^__(?P<route>.+?)__(?P<param>.*?)$/', $key, $matches)) {
                 continue;
             }
 
             $this->name = $matches['route'];
-            $this->parameters->set($matches['param'], $value);
+            if ($matches['param']) {
+                $this->parameters->set($matches['param'], $value);
+            }
         }
     }
 

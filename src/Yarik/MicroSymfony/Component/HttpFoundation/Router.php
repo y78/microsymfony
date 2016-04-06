@@ -68,11 +68,13 @@ class Router
         if (!$this->regexprs) {
             $this->compile();
         }
-        
+
+        $path = $this->request->getPath();
+
         foreach ($this->regexprs as $regexpr) {
-            if (preg_match($regexpr, $this->request->getPath(), $matches)) {
+            if (preg_match($regexpr, $path, $matches)) {
                 $route = new Route($matches);
-                $route->intersectParameters($this->parameters[$route->getName()]);
+                $route->intersectParameters($this->parameters[$route->getName()] ?? []);
                 $route->defaults = new ParameterBag($this->defaults[$route->getName()]);
 
                 return $route;
@@ -126,7 +128,7 @@ class Router
                 return '(?P<__' . $routeName . '__' . $value . '>' . $exp . ')';
             }
 
-            return preg_quote($value, '/');
+            return '(?P<__' . $routeName . '__' . '>' . preg_quote($value, '/') . ')';
         }, $split);
 
         $exp = '^' . implode($parts) . '$';

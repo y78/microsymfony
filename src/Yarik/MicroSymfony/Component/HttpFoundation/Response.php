@@ -9,8 +9,9 @@ class Response
         'Content-Type' => 'UTF-8'
     ];
 
-    public function __construct()
+    public function __construct($content = '')
     {
+        $this->content = $content;
     }
 
     public function setContent($content)
