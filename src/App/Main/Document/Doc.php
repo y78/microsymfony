@@ -2,11 +2,19 @@
 
 namespace App\Main\Document;
 
-class Doc
+class Doc implements \JsonSerializable
 {
     protected $id;
     protected $name;
     protected $embed;
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
+    }
 
     public function __construct()
     {

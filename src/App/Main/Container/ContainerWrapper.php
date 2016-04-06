@@ -4,6 +4,7 @@ namespace App\Main\Container;
 
 use Yarik\MicroSymfony\Component\Dependency\Container;
 use Yarik\MicroSymfony\Component\Dependency\ContainerInterface;
+use Yarik\MicroSymfony\MicroTwig\MicroTwig;
 use Yarik\MicroSymfony\ODM\Persistence\DocumentManager;
 
 class ContainerWrapper implements ContainerInterface
@@ -19,6 +20,12 @@ class ContainerWrapper implements ContainerInterface
     public function getDocumentManager()
     {
         return $this->container->get('mongo.manager');
+    }
+
+    /** @return MicroTwig */
+    public function getTwig()
+    {
+        return $this->container->get('microtwig');
     }
 
     public function set($id, $service)

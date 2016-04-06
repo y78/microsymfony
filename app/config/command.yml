@@ -1,9 +1,8 @@
 imports:
     - { resource: config.yml }
 
-services:
-
 parameters:
     namespace: App\Main
-    command.dirs:
-        - %kernel.root_dir%/../src/App/Main/Command
+    command:
+        App\Main\Command: %kernel.root_dir%/../src/App/Main/Command
+        Yarik\MicroSymfony\Command: %kernel.framework_dir%/Command

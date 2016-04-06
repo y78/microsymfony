@@ -1,6 +1,265 @@
 <?php
 
 
+            namespace Cache;
+        
+            use Yarik\MicroSymfony\ODM\Persistence\DocumentManagerCachedFactory;
+            use Yarik\MicroSymfony\Component\HttpFoundation\Factory\CachedRouterFactory;
+            use Yarik\MicroSymfony\Component\HttpFoundation\Request;
+            use Yarik\MicroSymfony\Component\HttpFoundation\Response;
+            
+            class CacheKernel extends \Yarik\MicroSymfony\Component\HttpKernel\Kernel
+            {
+                protected function initConfig()
+                {
+                    if ($this->env) {
+                        $this->configPath = $this->rootDir . '/config/' . $this->env . '.yml';
+                    } else {
+                        $this->configPath = $this->rootDir . '/config/config.yml';
+                    }
+            
+                    $this->config = array (
+  'parameters' => 
+  array (
+    'mongo.db_name' => 'testdb',
+    'Framework.config' => '/Users/yarik/dev/yarik/microsymfony/src/Yarik/MicroSymfony/Resources/config/components.yml',
+    'Main.resources' => '/Users/yarik/dev/yarik/microsymfony/src/App/Main/Resources',
+    'Main.services' => '/Users/yarik/dev/yarik/microsymfony/src/App/Main/Resources/config/services.yml',
+    'Main.routing' => '/Users/yarik/dev/yarik/microsymfony/src/App/Main/Resources/config/routing.yml',
+  ),
+  'services' => 
+  array (
+    'router_factory' => 
+    array (
+      'class' => 'Yarik\\MicroSymfony\\Component\\HttpFoundation\\Factory\\RouterFactory',
+      'arguments' => 
+      array (
+        0 => '@yaml_reader',
+        1 => '/Users/yarik/dev/yarik/microsymfony/app/config/routing.yml',
+      ),
+    ),
+    'router' => 
+    array (
+      'class' => 'Yarik\\MicroSymfony\\Component\\HttpFoundation\\Router',
+      'factory' => 
+      array (
+        'service' => 'router_factory',
+        'method' => 'createRouter',
+        'arguments' => 
+        array (
+          0 => '@request',
+        ),
+      ),
+    ),
+    'microtwig' => 
+    array (
+      'class' => 'Yarik\\MicroSymfony\\MicroTwig\\MicroTwig',
+    ),
+    'yaml_reader' => 
+    array (
+      'class' => 'Yarik\\MicroSymfony\\Component\\Parser\\YamlReader',
+      'arguments' => 
+      array (
+        0 => '@yaml_parser',
+      ),
+    ),
+    'yaml_parser' => 
+    array (
+      'class' => 'Yarik\\MicroSymfony\\Component\\Parser\\YamlParser',
+    ),
+    'cache.saver' => 
+    array (
+      'class' => 'Yarik\\MicroSymfony\\Component\\Cache\\CacheSaver',
+      'arguments' => 
+      array (
+        0 => '/Users/yarik/dev/yarik/microsymfony/app',
+        1 => '/Users/yarik/dev/yarik/microsymfony/app/config/config.yml',
+        2 => '/Users/yarik/dev/yarik/microsymfony/app/config/routing.yml',
+        3 => '/Users/yarik/dev/yarik/microsymfony/app/config/mapping.yml',
+        4 => 
+        array (
+          0 => 'Yarik\\MicroSymfony\\Component\\HttpKernel\\Kernel',
+          1 => 'Yarik\\MicroSymfony\\Component\\Parser\\YamlReader',
+          2 => 'Yarik\\MicroSymfony\\Component\\Parser\\YamlParser',
+          3 => 'Yarik\\MicroSymfony\\Component\\Dependency\\Container',
+          4 => 'Yarik\\MicroSymfony\\Component\\Dependency\\ContainerInterface',
+          5 => 'Yarik\\MicroSymfony\\Component\\HttpFoundation\\Request',
+          6 => 'Yarik\\MicroSymfony\\Component\\HttpFoundation\\ParameterBag',
+          7 => 'Yarik\\MicroSymfony\\Component\\HttpFoundation\\Router',
+          8 => 'Yarik\\MicroSymfony\\Component\\HttpFoundation\\Factory\\RouterFactory',
+          9 => 'Yarik\\MicroSymfony\\Component\\HttpFoundation\\Factory\\CachedRouterFactory',
+          10 => 'Yarik\\MicroSymfony\\Component\\HttpFoundation\\Route',
+          11 => 'Yarik\\MicroSymfony\\Component\\HttpFoundation\\JsonResponse',
+          12 => 'Yarik\\MicroSymfony\\Component\\HttpFoundation\\Response',
+          13 => 'Yarik\\MicroSymfony\\ODM\\Persistence\\DocumentManagerCachedFactory',
+          14 => 'Yarik\\MicroSymfony\\MicroTwig\\MicroTwig',
+          15 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\Interpreter',
+          16 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\Lexer',
+          17 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\AbstractLexer',
+          18 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\Struct\\Stack',
+          19 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\TokenInterpreter\\ValueInterpreter',
+          20 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\TokenInterpreter\\InterpreterInterface',
+          21 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\Extension\\ArithmeticExtension',
+          22 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\Extension\\Extension',
+          23 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\Handler\\ArithmeticHandler',
+          24 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\Handler\\LogicHandler',
+          25 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\TokenInterpreter\\BinaryOperatorInterpreter',
+          26 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\TokenInterpreter\\UnaryLeftInterpreter',
+          27 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\TokenInterpreter\\BracketOpenInterpreter',
+          28 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\TokenInterpreter\\BracketCloseInterpreter',
+          29 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\TokenInterpreter\\PunctuationInterpreter',
+          30 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\Extension\\DeclaratorExtension',
+          31 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\TokenInterpreter\\DotInterpreter',
+          32 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\Extension\\ConditionExtension',
+          33 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\TokenInterpreter\\IfInterpreter',
+          34 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\TokenInterpreter\\ElseInterpreter',
+          35 => 'Yarik\\MicroSymfony\\MicroTwig\\Interpreter\\TokenInterpreter\\EndIfInterpreter',
+          36 => 'Yarik\\MicroSymfony\\ODM\\Persistence\\Collection',
+          37 => 'Yarik\\MicroSymfony\\ODM\\Persistence\\DocumentManager',
+          38 => 'Yarik\\MicroSymfony\\ODM\\Persistence\\DocumentManagerFactory',
+          39 => 'Yarik\\MicroSymfony\\ODM\\Persistence\\Hydrator',
+          40 => 'Yarik\\MicroSymfony\\ODM\\Persistence\\ObjectManager',
+        ),
+      ),
+    ),
+    'mongo.client' => 
+    array (
+      'class' => '\\MongoDB\\Driver\\Manager',
+      'arguments' => NULL,
+    ),
+    'mongo.manager.factory' => 
+    array (
+      'class' => 'Yarik\\MicroSymfony\\ODM\\Persistence\\DocumentManagerFactory',
+      'arguments' => 
+      array (
+        0 => '@yaml_reader',
+        1 => '/Users/yarik/dev/yarik/microsymfony/app/config/mapping.yml',
+      ),
+    ),
+    'mongo.manager' => 
+    array (
+      'class' => 'Yarik\\MicroSymfony\\ODM\\Persistence\\DocumentManager',
+      'factory' => 
+      array (
+        'service' => 'mongo.manager.factory',
+        'method' => 'createDocumentManager',
+        'arguments' => 
+        array (
+          0 => '@mongo.client',
+          1 => 'testdb',
+        ),
+      ),
+    ),
+    'app.container_wrapper' => 
+    array (
+      'class' => 'App\\Main\\Container\\ContainerWrapper',
+      'arguments' => 
+      array (
+        0 => '@container',
+      ),
+    ),
+  ),
+);
+                }
+                
+                
+                /** @return Response */
+                public function handleRequest(Request $request)
+                {
+                    $this->container->set('request', $request);
+                    
+                    $dmFactory = new DocumentManagerCachedFactory(array (
+  'App\\Main\\Document\\Doc' => 
+  array (
+    'collection' => 'doc',
+    'mapping' => 
+    array (
+      'id' => 
+      array (
+        'name' => '_id',
+        'type' => 'int',
+      ),
+      'name' => 
+      array (
+        'type' => 'string',
+      ),
+      'embed' => 
+      array (
+        'type' => 'embed',
+        'targetDocument' => 'App\\Main\\Document\\DocEmbed',
+      ),
+    ),
+  ),
+  'App\\Main\\Document\\DocEmbed' => 
+  array (
+    'mapping' => 
+    array (
+      'key1' => 
+      array (
+        'type' => 'string',
+      ),
+      'key2' => 
+      array (
+        'type' => 'string',
+      ),
+    ),
+  ),
+));
+                    $this->container->set('mongo.manager.factory', $dmFactory);
+                    
+            
+                    $factory = new CachedRouterFactory(array (
+  'category_list' => 
+  array (
+    'path' => '/',
+    'defaults' => 
+    array (
+      '_controller' => 'App\\Main:Category:list',
+    ),
+  ),
+  'category_show' => 
+  array (
+    'path' => '/{id}',
+    'defaults' => 
+    array (
+      '_controller' => 'App\\Main:Category:show',
+    ),
+  ),
+  'category_edit' => 
+  array (
+    'path' => '/{id}/edit',
+    'defaults' => 
+    array (
+      '_controller' => 'App\\Main:Category:edit',
+    ),
+  ),
+  'category_remove' => 
+  array (
+    'path' => '/{id}/remove',
+    'defaults' => 
+    array (
+      '_controller' => 'App\\Main:Category:remove',
+    ),
+  ),
+));
+                    
+                    $router = $factory->createRouter($request);
+                    $this->container->set('router', $router);
+                    
+                    $route = $router->getRoute();
+                    $controller = $route->get('_controller');
+                    preg_match('/^(.*?)\:(.*?)\:(.*?)$/', $controller, $matches);
+                    $class = $matches[1] . '\\Controller\\' . $matches[2] . 'Controller';
+                    $instance = new $class($this->container);
+            
+                    return $this->callMethodArray(
+                        $instance,
+                        $matches[3] . 'Action',
+                        $route->parameters->all() + ['request' => $request]
+                    );
+                }
+            }
+        
 namespace Yarik\MicroSymfony\Component\HttpKernel;
 
 use Yarik\MicroSymfony\Component\Dependency\Container;

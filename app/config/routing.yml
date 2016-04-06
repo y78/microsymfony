@@ -1,19 +1,2 @@
-category_list:
-    path: /
-    defaults:
-        _controller: App\Main:Category:list
-
-category_show:
-    path: /{id}
-    defaults:
-        _controller: App\Main:Category:show
-
-category_edit:
-    path: /{id}/edit
-    defaults:
-        _controller: App\Main:Category:edit
-
-category_remove:
-    path: /{id}/remove
-    defaults:
-        _controller: App\Main:Category:remove
+imports:
+    - { resource: %Main.routing% }

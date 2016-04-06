@@ -1,8 +1,4 @@
 imports:
     - { resource: parameters.yml }
-    - { resource: components.yml }
-
-services:
-    app.container_wrapper:
-        class: App\Main\Container\ContainerWrapper
-        arguments: [@container]
+    - { resource: %Framework.config% }
+    - { resource: %Main.services% }

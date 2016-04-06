@@ -1,2 +1,8 @@
 parameters:
     mongo.db_name: testdb
+
+    Framework.config: %kernel.framework_dir%/Resources/config/components.yml
+
+    Main.resources: %kernel.project_dir%/src/App/Main/Resources
+    Main.services: %Main.resources%/config/services.yml
+    Main.routing: %Main.resources%/config/routing.yml
