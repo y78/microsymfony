@@ -27,22 +27,29 @@ class CacheSaver
 
     public function save()
     {
+        $this->saveCode();
+        $this->saveCode(true);
+    }
+
+    public function saveCode($withoutKernel = false)
+    {
         $loader = new ClassLoader();
         $loader->add('', __DIR__ . '/../../../..');
 
         $r = new \ReflectionMethod(ClassLoader::class, 'findFileWithExtension');
         $r->setAccessible(true);
-        $file = fopen($this->out, 'w+');
-        $yamlCoder = new YamlCoder();
+        $file = fopen($this->out . ($withoutKernel ? '/cache.php' : '/cache.hard.php'), 'w+');
         $reader = new YamlReader(new YamlParser());
         $reader->read($this->configPath);
 
-        $config = $yamlCoder->getCode($reader->read($this->configPath));
-        $routing = $yamlCoder->getCode($reader->read($this->routingPath));
-        $mapping = $yamlCoder->getCode($reader->read($this->mappingPath));
-
         fwrite($file, "<?php\n\n");
-        fwrite($file, (new KernelCoder())->getCode($config, $routing, $mapping));
+        if (!$withoutKernel) {
+            $yamlCoder = new YamlCoder();
+            $config = $yamlCoder->getCode($reader->read($this->configPath));
+            $routing = $yamlCoder->getCode($reader->read($this->routingPath));
+            $mapping = $yamlCoder->getCode($reader->read($this->mappingPath));
+            fwrite($file, (new KernelCoder())->getCode($config, $routing, $mapping));
+        }
 
         foreach ($this->classes as $class) {
             $fname = $r->invoke($loader, $class, '.php');

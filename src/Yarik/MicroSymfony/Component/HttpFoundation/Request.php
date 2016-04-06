@@ -23,8 +23,11 @@ class Request
         }
 
         if (null !== $value = $this->server->get('PATH_INFO')) {
+            $value = preg_replace('/^index.php(.+?)$/', '$1', $value);
             return $this->path = $value;
         }
+
+
 
         return '';
     }

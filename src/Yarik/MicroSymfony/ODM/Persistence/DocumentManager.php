@@ -2,6 +2,8 @@
 
 namespace Yarik\MicroSymfony\ODM\Persistence;
 
+use Yarik\MicroSymfony\ODM\Repository;
+
 class DocumentManager implements ObjectManager
 {
     /** @var \MongoDB $db */
@@ -13,6 +15,7 @@ class DocumentManager implements ObjectManager
     protected $persist = [];
     protected $hydrators = [];
     protected $collections = [];
+    protected $repositories = [];
 
     protected $original = [];
     protected $objects = [];
@@ -24,6 +27,14 @@ class DocumentManager implements ObjectManager
         $this->metadata = $metadata;
 
         $this->idsCollection = new Collection($this->client, $this->db, 'microids');
+    }
+
+    public function getRepository($class)
+    {
+        return $this->repositories[$class] =
+            $this-$this->repositories[$class] ??
+            new Repository($this, $class)
+        ;
     }
 
     /** @return Collection */
@@ -99,7 +110,7 @@ class DocumentManager implements ObjectManager
 
                     $r = new \ReflectionProperty($class, 'id');
                     $r->setAccessible(true);
-                    $r->setValue($object, $id);
+                    $r->setValue($object, $lastId);
 
                     unset($r);
                 }
@@ -140,11 +151,6 @@ class DocumentManager implements ObjectManager
     public function refresh($object)
     {
         // TODO: Implement refresh() method.
-    }
-
-    public function getRepository($className)
-    {
-        // TODO: Implement getRepository() method.
     }
 
     public function contains($object)

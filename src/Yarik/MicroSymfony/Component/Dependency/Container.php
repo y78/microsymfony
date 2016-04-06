@@ -8,7 +8,7 @@ class Container implements ContainerInterface
     protected $parameters = [];
     protected $services = [];
 
-    public function __construct(array $config, array $parameters)
+    public function __construct(array $config = [], array $parameters = [])
     {
         $this->config = $config;
         $this->parameters = $parameters;
@@ -29,6 +29,11 @@ class Container implements ContainerInterface
     public function getParameter($id)
     {
         return $this->prepareParam($this->parameters[$id]);
+    }
+
+    public function getParameters()
+    {
+        return $this->parameters;
     }
 
     public function get($id)
@@ -97,7 +102,7 @@ class Container implements ContainerInterface
         return $arg;
     }
 
-    private function prepareParam($param)
+    public function prepareParam($param)
     {
         if (is_array($param)) {
             return array_map(function ($param) {

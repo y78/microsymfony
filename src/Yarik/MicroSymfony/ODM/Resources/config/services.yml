@@ -1,0 +1,15 @@
+services:
+    mongo.client:
+        class: \MongoDB\Driver\Manager
+        arguments: ['mongodb://localhost:27017']
+
+    mongo.manager.factory:
+        class: Yarik\MicroSymfony\ODM\Persistence\DocumentManagerFactory
+        arguments: [@yaml_reader, %kernel.root_dir%/config/mapping.yml]
+
+    mongo.manager:
+        class: Yarik\MicroSymfony\ODM\Persistence\DocumentManager
+        factory:
+            service: mongo.manager.factory
+            method: createDocumentManager
+            arguments: [@mongo.client, %mongo.db_name%]

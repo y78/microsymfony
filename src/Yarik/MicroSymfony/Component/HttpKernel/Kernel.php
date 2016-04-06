@@ -11,6 +11,7 @@ use Yarik\MicroSymfony\Component\Parser\YamlReader;
 
 class Kernel
 {
+    protected $reader;
     protected $rootDir;
     protected $configPath;
     protected $env;
@@ -75,9 +76,14 @@ class Kernel
             $this->configPath = $this->rootDir . '/config/config.yml';
         }
 
-        $reader = new YamlReader(new YamlParser());
+        $this->reader = new YamlReader(new YamlParser(), [
+            'kernel.framework_dir' => dirname(dirname(__DIR__)),
+            'kernel.root_dir' => $this->rootDir,
+            'kernel.project_dir' => dirname($this->rootDir),
+            'kernel.env' => $this->env
+        ]);
 
-        $this->config = $reader->read($this->configPath);
+        $this->config = $this->reader->read($this->configPath);
     }
 
     protected function initContainer()
@@ -91,7 +97,9 @@ class Kernel
             ->container
             ->set('kernel', $this)
             ->set('container', $this->container)
+            ->setParameter('kernel.framework_dir', dirname(dirname(__DIR__)))
             ->setParameter('kernel.root_dir', $this->rootDir)
+            ->setParameter('kernel.project_dir', dirname($this->rootDir))
             ->setParameter('kernel.env', $this->env)
         ;
     }

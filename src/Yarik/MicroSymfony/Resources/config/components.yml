@@ -1,0 +1,71 @@
+imports:
+    - {resource: %kernel.framework_dir%/ODM/Resources/config/services.yml}
+
+services:
+    router_factory:
+        class: Yarik\MicroSymfony\Component\HttpFoundation\Factory\RouterFactory
+        arguments: [@yaml_reader, %kernel.root_dir%/config/routing.yml]
+
+    router:
+        class: Yarik\MicroSymfony\Component\HttpFoundation\Router
+        factory: { service: router_factory, method: createRouter, arguments: [@request] }
+
+    microtwig:
+        class: Yarik\MicroSymfony\MicroTwig\MicroTwig
+
+    yaml_reader:
+        class: Yarik\MicroSymfony\Component\Parser\YamlReader
+        arguments: [@yaml_parser]
+
+    yaml_parser:
+        class: Yarik\MicroSymfony\Component\Parser\YamlParser
+
+    cache.saver:
+        class: Yarik\MicroSymfony\Component\Cache\CacheSaver
+        arguments:
+            - %kernel.root_dir%
+            - %kernel.root_dir%/config/config.yml
+            - %kernel.root_dir%/config/routing.yml
+            - %kernel.root_dir%/config/mapping.yml
+            -
+              - Yarik\MicroSymfony\Component\HttpKernel\Kernel
+              - Yarik\MicroSymfony\Component\Parser\YamlReader
+              - Yarik\MicroSymfony\Component\Parser\YamlParser
+              - Yarik\MicroSymfony\Component\Dependency\Container
+              - Yarik\MicroSymfony\Component\Dependency\ContainerInterface
+              - Yarik\MicroSymfony\Component\HttpFoundation\Request
+              - Yarik\MicroSymfony\Component\HttpFoundation\ParameterBag
+              - Yarik\MicroSymfony\Component\HttpFoundation\Router
+              - Yarik\MicroSymfony\Component\HttpFoundation\Factory\RouterFactory
+              - Yarik\MicroSymfony\Component\HttpFoundation\Factory\CachedRouterFactory
+              - Yarik\MicroSymfony\Component\HttpFoundation\Route
+              - Yarik\MicroSymfony\Component\HttpFoundation\JsonResponse
+              - Yarik\MicroSymfony\Component\HttpFoundation\Response
+              - Yarik\MicroSymfony\ODM\Persistence\DocumentManagerCachedFactory
+              - Yarik\MicroSymfony\MicroTwig\MicroTwig
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\Interpreter
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\Lexer
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\AbstractLexer
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\Struct\Stack
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\TokenInterpreter\ValueInterpreter
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\TokenInterpreter\InterpreterInterface
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\Extension\ArithmeticExtension
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\Extension\Extension
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\Handler\ArithmeticHandler
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\Handler\LogicHandler
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\TokenInterpreter\BinaryOperatorInterpreter
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\TokenInterpreter\UnaryLeftInterpreter
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\TokenInterpreter\BracketOpenInterpreter
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\TokenInterpreter\BracketCloseInterpreter
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\TokenInterpreter\PunctuationInterpreter
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\Extension\DeclaratorExtension
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\TokenInterpreter\DotInterpreter
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\Extension\ConditionExtension
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\TokenInterpreter\IfInterpreter
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\TokenInterpreter\ElseInterpreter
+              - Yarik\MicroSymfony\MicroTwig\Interpreter\TokenInterpreter\EndIfInterpreter
+              - Yarik\MicroSymfony\ODM\Persistence\Collection
+              - Yarik\MicroSymfony\ODM\Persistence\DocumentManager
+              - Yarik\MicroSymfony\ODM\Persistence\DocumentManagerFactory
+              - Yarik\MicroSymfony\ODM\Persistence\Hydrator
+              - Yarik\MicroSymfony\ODM\Persistence\ObjectManager

@@ -81,7 +81,7 @@ class Hydrator
             case 'embed':
                 return $this
                     ->manager
-                    ->create($options['targetDocument'], $data)
+                    ->create($options['targetDocument'], $data ? (array)$data : $data)
                 ;
         }
 

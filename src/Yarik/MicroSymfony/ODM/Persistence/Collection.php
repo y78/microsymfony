@@ -56,9 +56,9 @@ class Collection
     public function find(array $criteria = [], array $sort = [], $limit = null, $skip = null)
     {
         $params = [];
-        $sort ?? $params['sort'] = $sort;
-        $limit ?? $params['limit'] = $limit;
-        $skip ?? $params['skip'] = $skip;
+        if ($sort)  $params['sort'] = $sort;
+        if ($limit) $params['limit'] = $limit;
+        if ($skip)  $params['skip'] = $skip;
 
         return $this->manager->executeQuery($this->namespace, $query =  new Query($criteria, $params))->toArray();
     }

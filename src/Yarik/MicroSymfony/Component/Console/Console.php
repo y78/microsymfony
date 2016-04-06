@@ -14,16 +14,17 @@ class Console
         $this->container = $container;
     }
 
-    protected function init($dir)
+    protected function init($namespace, $dir)
     {
         if (!is_dir($dir)) {
             return;
         }
 
-        $commands = array_map(function ($path) {
+        $commands = array_map(function ($path) use ($namespace) {
             $matches = [];
             preg_match('/(\w+)Command.php/', $path, $matches);
-            return $this->container->getParameter('namespace') . '\\Command\\' . $matches[1] . 'Command';
+
+            return rtrim($namespace, '\\') . '\\' . $matches[1] . 'Command';
         }, glob($dir . '/*Command.php'));
 
         foreach ($commands as $class) {
@@ -37,8 +38,8 @@ class Console
 
     public function initCommands()
     {
-        foreach ($this->container->getParameter('command.dirs') as $dir) {
-            $this->init($dir);
+        foreach ($this->container->getParameter('command') as $namespace => $dir) {
+            $this->init($namespace, $dir);
         }
     }
 
