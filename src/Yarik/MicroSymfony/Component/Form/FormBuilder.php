@@ -40,6 +40,12 @@ class FormBuilder
         return $this;
     }
 
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
     public function getForm()
     {
         $this->buildRecursive($this->root);
