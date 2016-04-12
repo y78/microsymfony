@@ -9,5 +9,7 @@
     "autoload": {
         "psr-0": { "": "src/" }
     },
-    "require": {}
+    "require": {
+        "kakserpom/phpdaemon": "dev-master"
+    }
 }

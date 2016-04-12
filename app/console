@@ -5,7 +5,7 @@ const WEB_DIR = __DIR__;
 //require_once __DIR__ . '/cache.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$time = microtime(true) * 1000;
+//$time = microtime(true) * 1000;
 require_once __DIR__ . '/AppKernel.php';
 
 //$kernel = new \Cache\CacheKernel(null);
@@ -16,4 +16,4 @@ $console = new \Yarik\MicroSymfony\Component\Console\Console($kernel->getContain
 $console->initCommands();
 $console->run($input);
 
-var_dump(microtime(true) * 1000 - $time);
+//var_dump(microtime(true) * 1000 - $time);

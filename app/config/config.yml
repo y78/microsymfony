@@ -1,3 +1,4 @@
 imports:
     - { resource: parameters.yml }
     - { resource: %Framework.config% }
+    - { resource: %Main.config% }

@@ -1,0 +1,6 @@
+imports:
+    - { resource: config.yml }
+
+parameters:
+    socket.handler: App\Main\Socket\SocketHandler
+

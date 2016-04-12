@@ -1,3 +1,10 @@
 parameters:
     mongo.db_name: testdb
+
+    socket.config: %kernel.root_dir%/config/socket.conf
     Framework.config: %kernel.framework_dir%/Resources/config/components.yml
+    Main.dir: %kernel.project_dir%/src/App/Main
+    Main.config: %Main.dir%/Resources/config/config.yml
+    Main.routing: %Main.dir%/Resources/config/routing.yml
+
+    kernel.front: %kernel.project_dir%/front
