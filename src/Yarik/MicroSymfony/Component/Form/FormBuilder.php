@@ -11,7 +11,7 @@ class FormBuilder
     protected $currentNode;
     protected $currentDataNode;
 
-    public function __construct($name = 'form', FormTypeInterface $type = null, $data = null)
+    public function __construct($name = 'form', FormTypeInterface $type = null, $data = [])
     {
         if (null === $type) {
             $type = new FormType();
@@ -63,14 +63,15 @@ class FormBuilder
                 if (is_array($dataNode) && isset($dataNode[$key])) {
                     $this->currentDataNode = $dataNode[$key];
                 } elseif (is_object($dataNode)) {
-                    $this->currentDataNode = $dataNode->{'get' . ucfirst($key)}();
+                    $prefix = method_exists($dataNode, 'get' . ucfirst($key)) ? 'get' : 'is';
+                    $this->currentDataNode = $dataNode->{$prefix . ucfirst($key)}();
                 } else {
                     $this->currentDataNode = null;
                 }
             }
 
-            if (null !== $this->currentDataNode && !is_object($this->currentDataNode) && !is_array($this->currentDataNode)) {
-                $child[1]['value'] = $this->currentDataNode;
+            if (null !== $this->currentDataNode && !($child[0] instanceof FormTypeInterface)) {
+                $child[1]['value'] = $this->prepareValue($this->currentDataNode, $child);
             }
 
             if ($this->currentNode) {
@@ -87,6 +88,19 @@ class FormBuilder
 
         $this->currentNode = &$node[2];
         $this->currentDataNode = $dataNode;
+    }
+
+    protected function prepareValue($value, $node)
+    {
+        list ($type, $vars) = $node;
+        if ($type == 'choice') {
+            foreach ($vars['choices'] as $key => $choiceValue) {
+                if ($choiceValue == $value) {
+                    return $key;
+                }
+            }
+        }
+        return $value;
     }
 
     public function toArray()

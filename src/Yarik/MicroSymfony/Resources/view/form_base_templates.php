@@ -1,5 +1,7 @@
 <?php
 
+use \Yarik\MicroSymfony\Component\Form\FormView;
+
 function form_attributes($form)
 {
     if (!isset($form['attr'])) {
@@ -21,26 +23,43 @@ function form_value($form)
 }
 
 return [
-    'text' => function ($form, \Yarik\MicroSymfony\Component\Form\FormView $view) { ?>
-        <input type="text" name="<?=$form['name']?>" <?php form_value($form)?> <?php form_attributes($form)?> />
-    <?php },
-    'file' => function ($form, \Yarik\MicroSymfony\Component\Form\FormView $view) { ?>
-        <input type="file" name="<?=$form['name']?>" <?php form_value($form)?> <?php form_attributes($form)?> />
-    <?php },
-    'integer' => function ($form, \Yarik\MicroSymfony\Component\Form\FormView $view) { ?>
-        <input type="number" name="<?=$form['name']?>" <?php form_value($form)?> <?php form_attributes($form)?> />
-    <?php },
-    'email' => function ($form, \Yarik\MicroSymfony\Component\Form\FormView $view) {?>
-        <input type="email" name="<?=$form['name']?>" <?php form_value($form)?> <?php form_attributes($form)?> />
-    <?php },
-    'choice' => function ($form, \Yarik\MicroSymfony\Component\Form\FormView $view) {?>
-        <select name="<?=$form['name']?>" <?php form_attributes($form)?>>
-            <?php foreach ($form['choices'] as $key => $value) { ?>
+    'text' => function ($form, FormView $view) { ?>
+        <input type="text" name="<?=$form['name']?>" <? form_value($form)?> <? form_attributes($form)?> />
+    <? },
+
+    'file' => function ($form, FormView $view) { ?>
+        <input type="file" name="<?=$form['name']?>" <? form_value($form)?> <? form_attributes($form)?> />
+    <? },
+
+    'integer' => function ($form, FormView $view) { ?>
+        <input type="number" name="<?=$form['name']?>" <? form_value($form)?> <? form_attributes($form)?> />
+    <? },
+
+    'email' => function ($form, FormView $view) {?>
+        <input type="email" name="<?=$form['name']?>" <? form_value($form)?> <? form_attributes($form)?> />
+    <? },
+
+    'checkbox' => function ($form, FormView $view) {?>
+        <input type="checkbox" name="<?=$form['name']?>" <?=$form['value'] ? 'checked' : ''?> <? form_attributes($form)?> />
+    <? },
+
+    'choice' => function ($form, FormView $view) {
+        $current = null;
+        foreach ($form['choices'] as $value) {
+            if ($value == $current) {
+                $current = $value;
+            }
+        }
+    ?>
+        <select name="<?=$form['name']?>" <? form_attributes($form)?>>
+            <option value="">-/-</option>
+            <? foreach ($form['choices'] as $key => $value) {?>
                 <option value="<?=$key?>" <?= isset($form['value']) && $form['value'] == $key ? 'selected' : '' ?> ><?=$value?></option>
-            <?php } ?>
+            <? }?>
         </select>
-    <?php },
+    <? },
+
     'textarea' => function ($form, \Yarik\MicroSymfony\Component\Form\FormView $view) {?>
-        <textarea name="<?=$form['name']?>" <?php form_attributes($form)?>><?=isset($form['value']) ? $form['value'] : ''?></textarea>
-    <?php },
+        <textarea name="<?=$form['name']?>" <? form_attributes($form)?>><?=isset($form['value']) ? $form['value'] : ''?></textarea>
+    <? },
 ];

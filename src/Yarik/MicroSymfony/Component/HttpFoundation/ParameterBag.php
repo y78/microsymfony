@@ -24,6 +24,24 @@ class ParameterBag implements \Iterator
         return $this;
     }
 
+    public function getInt($key, $default = null)
+    {
+        if (null === $result = $this->get($key, $default)) {
+            return null;
+        }
+
+        return (int)$result;
+    }
+
+    public function getFloat($key, $default = null)
+    {
+        if (null === $result = $this->get($key, $default)) {
+            return null;
+        }
+
+        return (float)$this->get($key, $default);
+    }
+
     public function get($key, $default = null)
     {
         if (isset($this->data[$key])) {

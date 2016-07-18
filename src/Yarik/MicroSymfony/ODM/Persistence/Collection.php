@@ -53,14 +53,14 @@ class Collection
         return $result;
     }
 
-    public function find(array $criteria = [], array $sort = [], $limit = null, $skip = null)
+    public function find(array $criteria = null, array $sort = null, $limit = null, $skip = null)
     {
         $params = [];
         if ($sort)  $params['sort'] = $sort;
         if ($limit) $params['limit'] = $limit;
         if ($skip)  $params['skip'] = $skip;
 
-        return $this->manager->executeQuery($this->namespace, $query =  new Query($criteria, $params))->toArray();
+        return $this->manager->executeQuery($this->namespace, $query = new Query($criteria, $params))->toArray();
     }
 
     public function findOne(array $criteria = [], array $sort = [], $skip = null)

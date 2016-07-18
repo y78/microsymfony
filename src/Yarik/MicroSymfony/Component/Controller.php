@@ -20,7 +20,7 @@ class Controller
         $this->container = $container;
     }
 
-    public function createFormBuilder($data = null, $type = null)
+    public function createFormBuilder($data = [], $type = null)
     {
         return new FormBuilder('form', $type, $data);
     }

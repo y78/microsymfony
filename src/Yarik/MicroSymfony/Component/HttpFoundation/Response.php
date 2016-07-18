@@ -22,8 +22,8 @@ class Response
 
     public function handle()
     {
-
     }
+    
     public function sendHeaders()
     {
         if (headers_sent()) {

@@ -6,6 +6,6 @@ class JsonResponse extends Response
 {
     public function __construct($data)
     {
-        $this->setContent(json_encode($data));
+        $this->setContent(json_encode($data, JSON_UNESCAPED_UNICODE));
     }
 }

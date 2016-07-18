@@ -32,9 +32,24 @@ class DocumentManager implements ObjectManager
     public function getRepository($class)
     {
         return $this->repositories[$class] =
-            $this-$this->repositories[$class] ??
-            new Repository($this, $class)
+            $this->repositories[$class] ??
+            $this->createRepository($class)
         ;
+    }
+
+    protected function createRepository($class)
+    {
+        $repositoryClass = Repository::class;
+        if (isset($this->metadata[$class]['repository'])) {
+            $repositoryClass = $this->metadata[$class]['repository'];
+        }
+
+        return new $repositoryClass($this, $class);
+    }
+
+    public function hasField($class, $field)
+    {
+        return isset($this->metadata[$class]['mapping'][$field]);
     }
 
     /** @return Collection */
@@ -48,6 +63,15 @@ class DocumentManager implements ObjectManager
         return $this->collections[$class] = new Collection($this->client, $this->db, $collectionName);
     }
 
+    public function findget($class, $id)
+    {
+        if ($this->has($class, $id)) {
+            return $this->get($class, $id);
+        }
+
+        return $this->find($class, $id);
+    }
+
     public function find($class, $id)
     {
         if (null === $data = $this->getCollection($class)->findOne(['_id' => $id])) {
@@ -56,13 +80,17 @@ class DocumentManager implements ObjectManager
 
         $object = $this->create($class, (array)$data);
         $this->initializeObject($object, $data);
+        
+        if (method_exists($object, '__setInited')) {
+            $object->__setInited(true);
+        }
 
         return $object;
     }
 
     public function persist($object)
     {
-        $this->objects[get_class($object)][spl_object_hash($object)] = $object;
+        $this->objects[get_class($object)][$object->getId()] = $object;
 
         return $this;
     }
@@ -81,9 +109,14 @@ class DocumentManager implements ObjectManager
         return $this->getHydrator($class)->hydrate($data);
     }
 
+    public function createMany($class, array $rows, $prime = false)
+    {
+        return $this->getHydrator($class)->hydrateMany($rows, $prime);
+    }
+
     public function initializeObject($object, $data = [])
     {
-        $id = spl_object_hash($object);
+        $id = $object->getId();
         $data = $this->getHydrator($class = get_class($object))->unhydrate($object);
 
         $this->original[$class][$id] = $data;
@@ -155,7 +188,21 @@ class DocumentManager implements ObjectManager
 
     public function contains($object)
     {
-        return isset($this->original[get_class($object)][spl_object_hash($object)]);
+        return isset($this->original[get_class($object)][$object->getId()]);
+    }
+
+    public function has($class, $id)
+    {
+        return isset($this->original[$class][$id]);
+    }
+
+    public function get($class, $id)
+    {
+        if (null === $id || !$this->has($class, $id)) {
+            return null;
+        }
+
+        return $this->objects[$class][$id];
     }
 
     protected function prepareFields($class, $fields)
