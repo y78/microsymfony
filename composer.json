@@ -10,6 +10,6 @@
         "psr-0": { "": "src/" }
     },
     "require": {
-        "kakserpom/phpdaemon": "dev-master"
+        "kakserpom/phpdaemon": "^0.9.7"
     }
 }

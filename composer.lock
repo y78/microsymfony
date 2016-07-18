@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3392ac4f07deb4a7a2bed70d759d6d6c",
-    "content-hash": "0f79b31800468c81ece074e5c5678b02",
+    "hash": "23f23fc7c98f809ffdad8e3272a165e4",
+    "content-hash": "ca5802b764ddf009790c8f8c58e19600",
     "packages": [
         {
             "name": "kakserpom/phpdaemon",
-            "version": "dev-master",
+            "version": "v0.9.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kakserpom/phpdaemon.git",
-                "reference": "f8abda0d5f068a2e727ee5d17ff30289b44eec3c"
+                "reference": "02259a27d5e9244115b1c79f36c9d2607c7db56d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kakserpom/phpdaemon/zipball/f8abda0d5f068a2e727ee5d17ff30289b44eec3c",
-                "reference": "f8abda0d5f068a2e727ee5d17ff30289b44eec3c",
+                "url": "https://api.github.com/repos/kakserpom/phpdaemon/zipball/02259a27d5e9244115b1c79f36c9d2607c7db56d",
+                "reference": "02259a27d5e9244115b1c79f36c9d2607c7db56d",
                 "shasum": ""
             },
             "require": {
@@ -57,15 +57,13 @@
             "keywords": [
                 "phpdaemon"
             ],
-            "time": "2016-04-07 10:51:50"
+            "time": "2015-12-07 02:39:29"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "kakserpom/phpdaemon": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
