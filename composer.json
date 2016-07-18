@@ -10,6 +10,5 @@
         "psr-0": { "": "src/" }
     },
     "require": {
-        "kakserpom/phpdaemon": "^0.9.7"
     }
 }
